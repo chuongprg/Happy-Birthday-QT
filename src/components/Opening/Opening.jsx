@@ -388,10 +388,20 @@ export default function Opening({ onEnvelopeOpen, onMontageStart, onPlainMusicSt
     document.getElementById('section-message')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // The dinner reveal card (photo + countdown + address + scroll button) is
+  // taller than the others and doesn't fit one screen on smaller phones
+  // (iPhone SE/8 and similar) — forcing it into a fixed h-[100svh] with
+  // overflow-hidden was clipping the "xem thêm" button off entirely there.
+  // Every other stage is a deliberately fixed one-screen moment, so only the
+  // dinner stage switches to a natural-height, scrollable section.
+  const isDinnerStage = stage === 'dinner';
+
   return (
     <section
       id="section-home"
-      className="relative flex h-[100svh] w-full flex-col items-center justify-center overflow-hidden bg-cream"
+      className={`relative flex w-full flex-col items-center justify-center bg-cream ${
+        isDinnerStage ? 'min-h-[100svh] overflow-visible py-12' : 'h-[100svh] overflow-hidden'
+      }`}
     >
       <GlowBackground variant="pastel" />
       {showFlowerBurst && <FlowerBurst />}

@@ -1,17 +1,18 @@
 import { motion } from 'framer-motion';
-import GlowBackground from '../UI/GlowBackground.jsx';
 import PickupLocationBox from './PickupLocationBox.jsx';
 
 // Scrolled-to from RestaurantReveal on dinner day — see App.jsx (only
-// mounted in 'dinner' content mode) and utils/birthdayGate.js.
+// mounted in 'dinner' content mode) and utils/birthdayGate.js. The
+// background glow/flowers/balloons come from the shared, viewport-fixed
+// <DinnerAmbience/> mounted at the App root, not a per-section one — that's
+// what keeps this section feeling continuous with RestaurantReveal above it
+// instead of a visibly separate block.
 export default function DinnerTransport() {
   return (
     <section
       id="section-dinner-transport"
-      className="relative flex min-h-[100svh] w-full flex-col items-center justify-center gap-5 overflow-hidden bg-cream px-6 py-20 text-center"
+      className="relative flex min-h-[100svh] w-full flex-col items-center justify-center gap-5 px-6 py-20 text-center"
     >
-      <GlowBackground variant="pastel" />
-
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}

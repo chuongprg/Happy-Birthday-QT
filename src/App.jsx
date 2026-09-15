@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import Opening from './components/Opening/Opening.jsx';
 import DinnerTransport from './components/Opening/DinnerTransport.jsx';
+import DinnerAmbience from './components/Opening/DinnerAmbience.jsx';
 import BirthdayMessage from './components/BirthdayMessage/BirthdayMessage.jsx';
 import MemoryGallery from './components/MemoryGallery/MemoryGallery.jsx';
 import EventTimeline from './components/EventTimeline/EventTimeline.jsx';
@@ -94,6 +95,7 @@ export default function App() {
   return (
     <>
       {!hideStickers && <FloatingStickers />}
+      {hasOpenedEnvelope && contentMode === 'dinner' && <DinnerAmbience />}
 
       <AnimatePresence>{booting && <LoadingScreen key="loading" />}</AnimatePresence>
 

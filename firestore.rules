@@ -20,5 +20,19 @@ service cloud.firestore {
         && request.resource.data.answer is string
         && request.resource.data.answer.size() < 300;
     }
+
+    match /youtubeTracks/{trackId} {
+      // A shared, editable-by-anyone playlist add-on — both people can add a
+      // song by YouTube link and remove one, no login needed (same trust
+      // model as the rest of this visitor-facing site).
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['videoId', 'title', 'addedAt'])
+        && request.resource.data.videoId is string
+        && request.resource.data.videoId.size() == 11
+        && request.resource.data.title is string
+        && request.resource.data.title.size() < 200;
+      allow delete: if true;
+      allow update: if false;
+    }
   }
 }
