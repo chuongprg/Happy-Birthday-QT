@@ -1,0 +1,12 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /photos/{sessionId}/{fileName} {
+      // Anyone visiting the site can upload a photo (visitors never log in).
+      allow write: if request.resource.size < 8 * 1024 * 1024
+                    && request.resource.contentType.matches('image/.*');
+      // Only the signed-in admin can view or remove uploaded photos.
+      allow read, delete: if request.auth != null;
+    }
+  }
+}
