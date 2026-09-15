@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Send, Pencil, Check } from 'lucide-react';
+import { Send, Pencil, Check, X } from 'lucide-react';
 import { fetchPickupLocation, savePickupLocation } from '../../utils/pickupLocation.js';
 
 // A tiny shared "form" backed by Firestore (see utils/pickupLocation.js) —
 // whoever answers first, both people see the same saved answer afterward
-// from any device, just by opening the live site.
+// from any device, just by opening the live site. Either person can also
+// clear it back to blank (e.g. to redo it), not just overwrite it.
 export default function PickupLocationBox() {
   // undefined = still loading, null = the read failed, '' = no answer yet,
   // otherwise the saved answer itself.
@@ -14,6 +15,7 @@ export default function PickupLocationBox() {
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
+  const [clearing, setClearing] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -45,6 +47,21 @@ export default function PickupLocationBox() {
     }
   };
 
+  const handleClear = async () => {
+    if (clearing || !window.confirm('Xoá điểm đón này để nhập lại từ đầu nhé?')) return;
+    setClearing(true);
+    try {
+      await savePickupLocation('');
+      setSavedAnswer('');
+      setDraft('');
+    } catch (err) {
+      console.warn('Clear pickup location failed:', err);
+      window.alert('Xoá chưa được, thử lại giúp em nhé 🙏');
+    } finally {
+      setClearing(false);
+    }
+  };
+
   if (savedAnswer === undefined) {
     return <p className="font-body text-xs font-medium text-ink/40">Đang tải...</p>;
   }
@@ -62,16 +79,26 @@ export default function PickupLocationBox() {
           <Check size={13} /> ĐIỂM ĐÓN ĐÃ GỬI
         </span>
         <p className="font-display text-base font-bold text-ink">{savedAnswer}</p>
-        <button
-          type="button"
-          onClick={() => {
-            setDraft(savedAnswer);
-            setEditing(true);
-          }}
-          className="mt-1 flex items-center gap-1 font-body text-xs font-bold text-wine/70"
-        >
-          <Pencil size={12} /> Sửa lại
-        </button>
+        <div className="mt-1 flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => {
+              setDraft(savedAnswer);
+              setEditing(true);
+            }}
+            className="flex items-center gap-1 font-body text-xs font-bold text-wine/70"
+          >
+            <Pencil size={12} /> Sửa lại
+          </button>
+          <button
+            type="button"
+            onClick={handleClear}
+            disabled={clearing}
+            className="flex items-center gap-1 font-body text-xs font-bold text-ink/40 disabled:opacity-50"
+          >
+            <X size={12} /> {clearing ? 'Đang xoá...' : 'Xoá'}
+          </button>
+        </div>
       </motion.div>
     );
   }
