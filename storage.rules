@@ -1,3 +1,7 @@
+// Unused — the app no longer uses Firebase Storage at all (photos are
+// stored inline in Firestore instead, since Storage now requires the paid
+// Blaze plan just to create a bucket). Kept only in case you switch back to
+// real Storage later; nothing needs to publish these rules for the app to work.
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {

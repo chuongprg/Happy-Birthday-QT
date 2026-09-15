@@ -20,10 +20,14 @@ VITE_APP_TARGET=admin npm run dev   # admin dashboard, on the same port
    the site itself — this is the only way an admin account gets created.
 3. **Firestore Database** → Create database (production mode). Rules tab → paste the
    contents of [`firestore.rules`](firestore.rules) → Publish.
-4. **Storage** → Get started. Rules tab → paste the contents of [`storage.rules`](storage.rules)
-   → Publish.
-5. Project settings → General → Your apps → Add app → Web. Copy the config values into
+4. Project settings → General → Your apps → Add app → Web. Copy the config values into
    `VITE_FIREBASE_*` in your `.env.local` (and into Vercel, see below).
+
+No Firebase Storage setup needed — photos (Gift Quest + the Locket-style moments
+widget) are compressed client-side and stored directly as Firestore document fields
+instead (see `src/utils/resizeImage.js` / `compressImage.js`), since Storage now
+requires the paid Blaze plan just to create a bucket. `storage.rules` is unused and
+only kept around in case you switch back to real Storage later.
 
 ## Deploying to two domains on Vercel
 
@@ -46,6 +50,5 @@ build-time env var:
 - The visitor site registers a service worker (`vite-plugin-pwa`) that caches its own
   assets for instant repeat loads and basic offline use. The admin dashboard opts out of
   this so it always shows live data.
-- Uploaded photos are served from Firebase Storage's own CDN with a
-  `public,max-age=31536000,immutable` cache header (each file is uniquely named and never
-  overwritten, so caching it forever is safe).
+- Uploaded photos live inline in Firestore (see above), so there's no separate CDN/cache
+  header to configure for them.

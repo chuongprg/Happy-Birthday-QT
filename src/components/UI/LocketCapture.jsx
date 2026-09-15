@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Camera, RotateCcw, Check, SwitchCamera } from 'lucide-react';
 import { uploadLocketPhoto } from '../../utils/locketPhotos.js';
+import { canvasToBudgetedDataUrl } from '../../utils/compressImage.js';
 
 // Live camera capture, Locket-style: front camera by default, snap a frame
 // to a canvas (no file-picker roundtrip like the gift-quest's PhotoCapture),
@@ -40,7 +41,7 @@ export default function LocketCapture({ onSaved }) {
   const handleCapture = () => {
     const video = videoRef.current;
     if (!video || !video.videoWidth) return;
-    const maxSide = 900;
+    const maxSide = 800;
     const scale = Math.min(1, maxSide / Math.max(video.videoWidth, video.videoHeight));
     const w = Math.round(video.videoWidth * scale);
     const h = Math.round(video.videoHeight * scale);
@@ -56,7 +57,7 @@ export default function LocketCapture({ onSaved }) {
       ctx.scale(-1, 1);
     }
     ctx.drawImage(video, 0, 0, w, h);
-    setCaptured(canvas.toDataURL('image/jpeg', 0.85));
+    setCaptured(canvasToBudgetedDataUrl(canvas, { quality: 0.75 }));
   };
 
   const handleSave = async () => {

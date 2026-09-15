@@ -1,30 +1,23 @@
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '../lib/firebase.js';
+import { db } from '../lib/firebase.js';
 import { getVisitorId } from './sessionId.js';
 
 // Best-effort background upload — the local preview/UX in the Gift Quest
-// never waits on this and never breaks if it fails (offline, ad-blocker,
-// missing Firebase env vars, etc.).
+// never waits on this and never breaks if it fails (offline, missing
+// Firebase env vars, etc.).
+//
+// Stored directly as a Firestore field (already-compressed JPEG data URL,
+// see utils/resizeImage.js), not Firebase Storage — Storage now requires
+// the paid Blaze plan just to create a bucket, and a resized photo comfortably
+// fits Firestore's 1 MiB per-document limit.
 export async function uploadCapturedPhoto(dataUrl, { giftIndex, giftTitle }) {
   try {
     const sessionId = getVisitorId();
-    const blob = await (await fetch(dataUrl)).blob();
-    const path = `photos/${sessionId}/${giftIndex}_${Date.now()}.jpg`;
-    const storageRef = ref(storage, path);
-
-    await uploadBytes(storageRef, blob, {
-      contentType: 'image/jpeg',
-      cacheControl: 'public,max-age=31536000,immutable',
-    });
-    const downloadURL = await getDownloadURL(storageRef);
-
     await addDoc(collection(db, 'photos'), {
       giftIndex,
       giftTitle,
       sessionId,
-      storagePath: path,
-      downloadURL,
+      imageData: dataUrl,
       capturedAt: serverTimestamp(),
     });
   } catch (err) {

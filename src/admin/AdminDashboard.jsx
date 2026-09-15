@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { collection, query, orderBy, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
-import { ref, deleteObject } from 'firebase/storage';
 import { signOut } from 'firebase/auth';
 import { LogOut, Trash2, X, Download, MapPin, RotateCcw } from 'lucide-react';
-import { auth, db, storage } from '../lib/firebase.js';
+import { auth, db } from '../lib/firebase.js';
 import { savePickupLocation } from '../utils/pickupLocation.js';
 
 function formatDate(timestamp) {
@@ -46,11 +45,6 @@ export default function AdminDashboard() {
 
   const handleDelete = async (photo) => {
     if (!window.confirm('Xoá tấm ảnh này? Không thể hoàn tác.')) return;
-    try {
-      await deleteObject(ref(storage, photo.storagePath));
-    } catch {
-      // object may already be gone — still remove the metadata doc below
-    }
     await deleteDoc(doc(db, 'photos', photo.id));
     setSelected((s) => (s?.id === photo.id ? null : s));
   };
@@ -119,7 +113,7 @@ export default function AdminDashboard() {
                 className="block aspect-square w-full"
               >
                 <img
-                  src={photo.downloadURL}
+                  src={photo.imageData}
                   alt={photo.giftTitle || 'Ảnh'}
                   className="h-full w-full object-cover"
                   loading="lazy"
@@ -159,7 +153,7 @@ export default function AdminDashboard() {
               onClick={(e) => e.stopPropagation()}
               className="flex max-h-full max-w-lg flex-col overflow-hidden rounded-2xl border-[3px] border-ink bg-cream shadow-sticker"
             >
-              <img src={selected.downloadURL} alt={selected.giftTitle} className="max-h-[70vh] w-full object-contain" />
+              <img src={selected.imageData} alt={selected.giftTitle} className="max-h-[70vh] w-full object-contain" />
               <div className="flex items-center justify-between gap-3 p-4">
                 <div className="font-body text-xs font-medium text-ink/60">
                   <p className="font-bold text-ink">{selected.giftTitle}</p>
@@ -167,9 +161,8 @@ export default function AdminDashboard() {
                 </div>
                 <div className="flex items-center gap-2">
                   <a
-                    href={selected.downloadURL}
-                    target="_blank"
-                    rel="noreferrer"
+                    href={selected.imageData}
+                    download={`${selected.giftTitle || 'anh'}.jpg`}
                     aria-label="Tải ảnh"
                     className="flex h-10 w-10 items-center justify-center rounded-full border-[3px] border-ink bg-mint text-ink"
                   >

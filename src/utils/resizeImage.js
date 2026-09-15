@@ -1,6 +1,9 @@
-// Downscales a captured photo before it goes into sessionStorage — keeps
-// seven photos comfortably under the browser's storage quota.
-export function resizeImageFile(file, maxDimension = 900, quality = 0.75) {
+import { canvasToBudgetedDataUrl } from './compressImage.js';
+
+// Downscales a captured photo before it's stored — keeps it small enough
+// for sessionStorage AND for a Firestore document field (see
+// compressImage.js; photos are stored inline in Firestore, not Storage).
+export function resizeImageFile(file, maxDimension = 800, quality = 0.7) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = () => reject(reader.error);
@@ -21,7 +24,7 @@ export function resizeImageFile(file, maxDimension = 900, quality = 0.75) {
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL('image/jpeg', quality));
+        resolve(canvasToBudgetedDataUrl(canvas, { quality }));
       };
       img.src = reader.result;
     };

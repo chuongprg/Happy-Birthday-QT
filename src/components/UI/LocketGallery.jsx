@@ -33,7 +33,7 @@ export default function LocketGallery() {
             onClick={() => setSelected(photo)}
             className="aspect-square overflow-hidden rounded-xl border-2 border-ink"
           >
-            <img src={photo.downloadURL} alt="" loading="lazy" className="h-full w-full object-cover" />
+            <img src={photo.imageData} alt="" loading="lazy" className="h-full w-full object-cover" />
           </motion.button>
         ))}
       </div>
@@ -54,7 +54,7 @@ export default function LocketGallery() {
               onClick={(e) => e.stopPropagation()}
               className="flex max-h-full max-w-sm flex-col overflow-hidden rounded-2xl border-[3px] border-ink bg-cream shadow-sticker"
             >
-              <img src={selected.downloadURL} alt="" className="max-h-[65vh] w-full object-contain" />
+              <img src={selected.imageData} alt="" className="max-h-[65vh] w-full object-contain" />
               <div className="flex items-center justify-end gap-2 p-3">
                 <button
                   type="button"
