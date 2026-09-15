@@ -12,6 +12,7 @@ import FinaleExperience from './components/FinalReveal/FinaleExperience.jsx';
 import SideNav from './components/UI/SideNav.jsx';
 import FloatingStickers from './components/UI/FloatingStickers.jsx';
 import MusicPlayer from './components/UI/MusicPlayer.jsx';
+import LocketWidget from './components/UI/LocketWidget.jsx';
 import LoadingScreen from './components/UI/LoadingScreen.jsx';
 import { useQuestState } from './hooks/useQuestState.js';
 import { useMusicPlayer } from './hooks/useMusicPlayer.js';
@@ -143,6 +144,7 @@ export default function App() {
           )}
 
           <MusicPlayer player={player} />
+          <LocketWidget />
         </>
       )}
     </>

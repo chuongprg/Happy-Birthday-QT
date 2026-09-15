@@ -8,5 +8,14 @@ service firebase.storage {
       // Only the signed-in admin can view or remove uploaded photos.
       allow read, delete: if request.auth != null;
     }
+
+    match /locket/{visitorId}/{fileName} {
+      // The Locket-style moments widget — unlike the gift-quest photos
+      // above, both people can browse and delete these themselves from the
+      // main site, no admin login needed.
+      allow read, delete: if true;
+      allow write: if request.resource.size < 8 * 1024 * 1024
+                    && request.resource.contentType.matches('image/.*');
+    }
   }
 }

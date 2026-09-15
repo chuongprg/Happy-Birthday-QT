@@ -137,6 +137,32 @@ export function useMusicPlayer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentKey]);
 
+  // Media Session metadata + hardware/lock-screen controls — without this,
+  // background/locked-screen playback has no now-playing info or play-pause
+  // controls on the lock screen, and some mobile browsers are more willing
+  // to keep audio alive in the background when a real media session is
+  // registered (it signals "this is legitimate background audio", not just
+  // an incidental sound from a backgrounded tab).
+  useEffect(() => {
+    if (!('mediaSession' in navigator) || !current) return;
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: current.title,
+      artist: current.artist,
+      album: 'Happy Birthday',
+    });
+    navigator.mediaSession.setActionHandler('play', play);
+    navigator.mediaSession.setActionHandler('pause', pause);
+    navigator.mediaSession.setActionHandler('previoustrack', prev);
+    navigator.mediaSession.setActionHandler('nexttrack', next);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [current?.key]);
+
+  useEffect(() => {
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+    }
+  }, [isPlaying]);
+
   const goRelative = useCallback(
     (direction) => {
       const total = tracks.length;

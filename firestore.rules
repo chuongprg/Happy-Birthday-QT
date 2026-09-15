@@ -34,5 +34,17 @@ service cloud.firestore {
       allow delete: if true;
       allow update: if false;
     }
+
+    match /locketPhotos/{photoId} {
+      // The Locket-style "moments" widget on the main site — a shared photo
+      // library both people can browse and delete from, no admin login
+      // needed (unlike the gift-quest `photos` collection above).
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(
+        ['visitorId', 'downloadURL', 'storagePath', 'capturedAt']
+      );
+      allow delete: if true;
+      allow update: if false;
+    }
   }
 }
