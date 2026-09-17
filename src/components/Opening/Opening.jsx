@@ -6,6 +6,7 @@ import GlowBackground from '../UI/GlowBackground.jsx';
 import PhotoSticker from '../UI/PhotoSticker.jsx';
 import FlowerBurst from '../UI/FlowerBurst.jsx';
 import MonthCalendarModal from '../UI/MonthCalendarModal.jsx';
+import BirthdayCountdown from './BirthdayCountdown.jsx';
 import PhotoMontage from './PhotoMontage.jsx';
 import Celebration from './Celebration.jsx';
 import RestaurantReveal from './RestaurantReveal.jsx';
@@ -296,6 +297,10 @@ function Hero({ onScrollNext, onOpenCalendar, onReplay, showContinue = true }) {
         className="rounded-full border-[3px] border-ink bg-mint px-6 py-2 font-body text-sm font-bold tracking-wide text-ink shadow-sticker-sm"
       >
         {birthdayConfig.month} · {birthdayConfig.year}
+      </motion.div>
+
+      <motion.div {...pop(0.42)} className="mt-3">
+        <BirthdayCountdown />
       </motion.div>
 
       <motion.p {...pop(0.5)} className="mt-4 max-w-xs font-display text-xl font-bold text-ink">
