@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { gifts, giftsConfig } from '../data/gifts.js';
 import { uploadCapturedPhoto } from '../utils/uploadPhoto.js';
+import { isQuestUnlocked } from '../utils/birthdayGate.js';
 
 const STORAGE_KEY = 'birthday-quest-state-v2';
 const GIFT_COUNT = gifts.length;
@@ -33,7 +34,12 @@ function loadState() {
     if (!raw) return defaultState();
     const parsed = JSON.parse(raw);
     const base = defaultState();
-    return { ...base, ...parsed };
+    const loaded = { ...base, ...parsed };
+    if (!isQuestUnlocked() && (loaded.appMode === 'quest' || loaded.appMode === 'finale')) {
+      loaded.appMode = 'story';
+      loaded.overlayOpen = false;
+    }
+    return loaded;
   } catch {
     return defaultState();
   }
@@ -95,6 +101,7 @@ export function useQuestState() {
   }, []);
 
   const startQuest = useCallback(() => {
+    if (!isQuestUnlocked()) return;
     setState((s) => ({ ...s, appMode: 'quest' }));
   }, []);
 
@@ -106,6 +113,7 @@ export function useQuestState() {
   }, []);
 
   const openGiftOverlay = useCallback((index) => {
+    if (!isQuestUnlocked()) return;
     setState((s) => {
       if (giftsConfig.requireInOrder && index !== s.currentGiftIndex) return s;
       if (!giftsConfig.requireInOrder && s.completedGifts[index]) return s;

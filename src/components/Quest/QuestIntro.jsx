@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Lock } from 'lucide-react';
 import GlowBackground from '../UI/GlowBackground.jsx';
 import Motif18 from '../UI/Motif18.jsx';
 import PhotoSticker from '../UI/PhotoSticker.jsx';
@@ -51,9 +52,9 @@ export default function QuestIntro({ onStart }) {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.6 }}
           transition={{ duration: 0.5, ease: 'backOut' }}
-          className="-mt-4 rounded-full border-[3px] border-ink bg-pink px-5 py-2 font-body text-xs font-bold tracking-wide text-wine shadow-sticker-sm"
+          className="-mt-4 inline-flex items-center gap-1.5 rounded-full border-[3px] border-ink bg-pink px-5 py-2 font-body text-xs font-bold tracking-wide text-wine shadow-sticker-sm"
         >
-          🎁 GIFT QUEST
+          {unlocked ? '🎁 GIFT QUEST' : '🔒 TẠM KHÓA · CHƯA ĐẾN GIỜ'}
         </motion.span>
 
         <motion.h2
@@ -97,9 +98,9 @@ export default function QuestIntro({ onStart }) {
           {unlocked ? (
             <motion.button
               initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              animate={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.6 }}
-              transition={{ duration: 0.6, ease: 'easeOut', delay: 1.2 }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
               whileHover={{ scale: 1.05, rotate: 1 }}
               whileTap={{ scale: 0.94, y: 4 }}
               onClick={onStart}
@@ -113,10 +114,22 @@ export default function QuestIntro({ onStart }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.6 }}
               transition={{ duration: 0.6, ease: 'easeOut', delay: 1.2 }}
-              className="mt-4 flex flex-col items-center gap-3"
+              className="mt-4 flex flex-col items-center gap-4"
             >
               <Countdown targetMs={QUEST_UNLOCK_MS} label="MỞ QUÀ SAU" arrivedLabel="MỞ ĐƯỢC RỒI 🎉" />
-              <p className="font-body text-xs font-semibold text-ink/40">Ráng chờ thêm chút xíu nha 🕐</p>
+              <div className="flex flex-col items-center gap-1.5">
+                <button
+                  type="button"
+                  disabled
+                  className="flex items-center gap-2 rounded-full border-[3px] border-ink/25 bg-ink/5 px-6 py-3 font-display text-sm font-bold text-ink/40 shadow-sticker-sm cursor-not-allowed"
+                >
+                  <Lock size={16} />
+                  <span>Mở vào lúc {birthdayConfig.questUnlock.time} ({birthdayConfig.questUnlock.date})</span>
+                </button>
+                <p className="font-body text-xs font-semibold text-ink/45">
+                  Đến đúng giờ này nút mở quà sẽ tự động mở khoá nha 🕐✨
+                </p>
+              </div>
             </motion.div>
           )}
         </div>

@@ -16,7 +16,7 @@ import LocketWidget from './components/UI/LocketWidget.jsx';
 import LoadingScreen from './components/UI/LoadingScreen.jsx';
 import { useQuestState } from './hooks/useQuestState.js';
 import { useMusicPlayer } from './hooks/useMusicPlayer.js';
-import { getContentMode } from './utils/birthdayGate.js';
+import { getContentMode, isQuestUnlocked } from './utils/birthdayGate.js';
 
 const ENVELOPE_KEY = 'birthday-envelope-opened-v1';
 
@@ -40,6 +40,13 @@ export default function App() {
     const t = setTimeout(() => setBooting(false), 1000);
     return () => clearTimeout(t);
   }, []);
+
+  // Safety guard: if appMode is 'quest' but quest is not unlocked yet, force fallback to story
+  useEffect(() => {
+    if (state.appMode === 'quest' && !isQuestUnlocked()) {
+      actions.exitToStory();
+    }
+  }, [state.appMode, actions]);
 
   // The rest of the story stays locked (no scrolling past the invitation)
   // until it's actually been opened — you enter the story, you don't skip it.

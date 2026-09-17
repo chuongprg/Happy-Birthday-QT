@@ -20,6 +20,20 @@ export default function Countdown({ targetMs, label = 'ĐẾM NGƯỢC', arrived
   const remaining = targetMs - now;
   const arrived = remaining <= 0;
 
+  const units =
+    remaining >= 86400000
+      ? [
+          ['Ngày', 86400000],
+          ['Giờ', 3600000],
+          ['Phút', 60000],
+          ['Giây', 1000],
+        ]
+      : [
+          ['Giờ', 3600000],
+          ['Phút', 60000],
+          ['Giây', 1000],
+        ];
+
   return (
     <div className="flex flex-col items-center gap-2">
       <span className="font-body text-[11px] font-bold tracking-wide text-wine/60">
@@ -27,9 +41,9 @@ export default function Countdown({ targetMs, label = 'ĐẾM NGƯỢC', arrived
       </span>
       {!arrived && (
         <div className="flex items-center gap-2">
-          {UNITS.map(([unitLabel, unitMs], i) => {
+          {units.map(([unitLabel, unitMs], i) => {
             const value =
-              i === 0 ? Math.floor(remaining / unitMs) : Math.floor((remaining % UNITS[i - 1][1]) / unitMs);
+              i === 0 ? Math.floor(remaining / unitMs) : Math.floor((remaining % units[i - 1][1]) / unitMs);
             return (
               <div
                 key={unitLabel}
