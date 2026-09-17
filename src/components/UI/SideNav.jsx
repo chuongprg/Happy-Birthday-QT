@@ -6,7 +6,7 @@ import { CakeSticker, FlowerSticker, BalloonSticker, GiftSticker } from './stick
 const ITEMS = [
   { id: 'section-home', label: 'Trang chủ', Icon: CakeSticker },
   { id: 'section-memories', label: 'Kỷ niệm', Icon: FlowerSticker },
-  { id: 'section-today', label: 'Hôm nay', Icon: BalloonSticker },
+  { id: 'section-today', label: 'Lịch trình', Icon: BalloonSticker },
   { id: 'section-quest', label: 'Quà', Icon: GiftSticker },
 ];
 

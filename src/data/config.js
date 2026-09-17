@@ -68,7 +68,7 @@ export const birthdayConfig = {
     chapters: [
       { number: '01', title: 'LỜI CHÚC' },
       { number: '02', title: 'KÝ ỨC' },
-      { number: '03', title: 'HÔM NAY' },
+      { number: '03', title: 'LỊCH TRÌNH' },
       { number: '04', title: 'CUỘC PHIÊU LƯU' },
       { number: '05', title: 'BẤT NGỜ' },
     ],

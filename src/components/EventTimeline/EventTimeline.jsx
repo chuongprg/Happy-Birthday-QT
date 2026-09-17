@@ -1,17 +1,23 @@
 import { motion } from 'framer-motion';
-import { Users, Dices, UtensilsCrossed, Camera, Gift, Sparkles, Lock } from 'lucide-react';
+import { Users, Dices, UtensilsCrossed, Camera, Gift, Sparkles, Lock, Gamepad2, Cake } from 'lucide-react';
 import SectionHeading from '../UI/SectionHeading.jsx';
 import PhotoSticker from '../UI/PhotoSticker.jsx';
 import { timelineEvents } from '../../data/timeline.js';
 import { stickerPack } from '../../data/stickerPack.js';
 import { birthdayConfig } from '../../data/config.js';
+import { parseDateTime } from '../../utils/parseDateTime.js';
 
-const ICONS = { Users, Dices, UtensilsCrossed, Camera, Gift, Sparkles };
+const ICONS = { Users, Dices, UtensilsCrossed, Camera, Gift, Sparkles, Gamepad2, Cake };
 const NODE_COLORS = ['bg-pink', 'bg-mint', 'bg-green', 'bg-pink', 'bg-mint', 'bg-green'];
 
-function timeToMinutes(t) {
-  const [h, m] = t.split(':').map(Number);
-  return h * 60 + m;
+function getEventTimestamp(event) {
+  if (event.fullDate && event.time) {
+    return parseDateTime(event.fullDate, event.time);
+  }
+  const [h, m, s = 0] = event.time.split(':').map(Number);
+  const d = new Date();
+  d.setHours(h, m, s, 0);
+  return d.getTime();
 }
 
 function computeStatus(event, index, events, appMode, questCompleted) {
@@ -24,13 +30,16 @@ function computeStatus(event, index, events, appMode, questCompleted) {
     if (!questCompleted) return 'LOCKED';
   }
 
-  const now = new Date();
-  const nowMin = now.getHours() * 60 + now.getMinutes();
-  const thisMin = timeToMinutes(event.time);
-  const nextMin = events[index + 1] ? timeToMinutes(events[index + 1].time) : Infinity;
+  const nowMs = Date.now();
+  const eventStartMs = getEventTimestamp(event);
+  const nextEventStartMs = events[index + 1] ? getEventTimestamp(events[index + 1]) : Infinity;
 
-  if (nowMin >= thisMin && nowMin < nextMin) return 'NOW';
-  if (nowMin >= nextMin) return 'COMPLETED';
+  if (event.key === 'quest' && nowMs < eventStartMs) {
+    return 'LOCKED';
+  }
+
+  if (nowMs >= eventStartMs && nowMs < nextEventStartMs) return 'NOW';
+  if (nowMs >= nextEventStartMs) return 'COMPLETED';
   return 'UPCOMING';
 }
 
@@ -47,7 +56,7 @@ export default function EventTimeline({ appMode, questCompleted }) {
       <div className="mb-14 px-6 sm:px-12">
         <SectionHeading
           chapter={birthdayConfig.story.chapters[2]}
-          eyebrow="🗓️ HÔM NAY CÓ GÌ"
+          eyebrow="🗓️ LỊCH TRÌNH ĐẶC BIỆT"
           title={'Đây là lịch trình\nđã chuẩn bị cho Quế Trân.'}
         />
       </div>
@@ -76,7 +85,7 @@ export default function EventTimeline({ appMode, questCompleted }) {
                     locked ? 'bg-ink/10' : status === 'NOW' ? 'bg-wine text-cream' : nodeColor
                   }`}
                 >
-                  {event.title === 'Ăn tối sinh nhật' && (
+                  {(event.title === 'Ăn tối' || event.title === 'Ăn tối sinh nhật') && (
                     <PhotoSticker
                       sticker={stickerPack.hungry}
                       className="-right-5 -top-6"
@@ -89,7 +98,9 @@ export default function EventTimeline({ appMode, questCompleted }) {
 
                 <div className="flex flex-1 flex-col gap-1 pt-1.5">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-body text-xs font-bold text-wine/70">{event.time}</span>
+                    <span className="font-body text-xs font-bold text-wine/70">
+                      {event.date ? `${event.displayTime || event.time} · ${event.date}` : (event.displayTime || event.time)}
+                    </span>
                     <span
                       className={`rounded-full px-2.5 py-0.5 font-body text-[9px] font-bold tracking-wide ${
                         status === 'NOW'
