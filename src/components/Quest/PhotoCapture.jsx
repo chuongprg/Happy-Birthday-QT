@@ -58,7 +58,7 @@ export function PhotoPreviewStep({ photo, onRetake, onConfirm }) {
   return (
     <div className="flex flex-col items-center gap-6 text-center">
       <span className="rounded-full border-[3px] border-ink bg-green px-4 py-1.5 font-body text-xs font-bold tracking-wide text-ink shadow-sticker-sm">
-        KỶ NIỆM CỦA EM
+        KỶ NIỆM CỦA QUẾ TRÂN
       </span>
 
       <motion.div

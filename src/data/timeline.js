@@ -36,7 +36,7 @@ export const timelineEvents = [
   {
     time: '21:00',
     title: 'Bất ngờ cuối cùng',
-    description: 'Điều duy nhất em chưa mở khoá được.',
+    description: 'Điều duy nhất chưa được mở khoá.',
     icon: 'Sparkles',
     key: 'finale',
   },

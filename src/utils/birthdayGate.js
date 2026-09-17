@@ -1,11 +1,15 @@
 import { birthdayConfig } from '../data/config.js';
+import { parseDateTime } from './parseDateTime.js';
 
-function previewOverride() {
-  if (typeof window === 'undefined') return null;
+// ?preview=age,quest supports combining flags (comma-separated) — each gate
+// below just checks whether its own name is in the list.
+function hasPreviewFlag(name) {
+  if (typeof window === 'undefined') return false;
   try {
-    return new URLSearchParams(window.location.search).get('preview');
+    const raw = new URLSearchParams(window.location.search).get('preview');
+    return (raw ?? '').split(',').includes(name);
   } catch {
-    return null;
+    return false;
   }
 }
 
@@ -19,7 +23,7 @@ function previewOverride() {
 // appended to the URL — harmless and easy to forget about since nobody
 // stumbles onto a query param by accident.
 export function isBirthdayLive(now = new Date()) {
-  if (previewOverride() === 'age') return true;
+  if (hasPreviewFlag('age')) return true;
 
   const target = new Date(
     Number(birthdayConfig.year),
@@ -37,7 +41,7 @@ export function isBirthdayLive(now = new Date()) {
 // so if the birthday gate is ever live this never also claims to be "dinner
 // day". Preview with ?preview=dinner (see isBirthdayLive's ?preview=age).
 export function isDinnerDay(now = new Date()) {
-  if (previewOverride() === 'dinner') return true;
+  if (hasPreviewFlag('dinner')) return true;
   if (isBirthdayLive(now)) return false;
 
   return (
@@ -54,4 +58,14 @@ export function getContentMode(now = new Date()) {
   if (isBirthdayLive(now)) return 'full';
   if (isDinnerDay(now)) return 'dinner';
   return 'locked';
+}
+
+// The Gift Quest minigame unlocks a bit later than the rest of the birthday
+// story (see birthdayConfig.questUnlock) — QuestIntro stays visible but
+// shows a countdown instead of the "start" button until this moment.
+// Preview with ?preview=quest.
+export function isQuestUnlocked(now = new Date()) {
+  if (hasPreviewFlag('quest')) return true;
+  const target = parseDateTime(birthdayConfig.questUnlock.date, birthdayConfig.questUnlock.time);
+  return now.getTime() >= target;
 }

@@ -38,7 +38,7 @@ export default function FinalVideo({ onEnded }) {
               Một điều nho nhỏ
             </span>
             <span className="font-display text-2xl font-bold text-pink sm:text-3xl">
-              anh/chị làm riêng cho em
+              dành tặng chị Quế Trân
             </span>
           </motion.div>
         ) : (

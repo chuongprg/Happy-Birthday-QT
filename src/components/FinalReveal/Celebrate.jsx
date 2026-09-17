@@ -28,7 +28,7 @@ export default function Celebrate({ onReveal }) {
         transition={{ delay: 0.5, duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
         className="font-display text-4xl font-bold text-ink sm:text-5xl"
       >
-        Em đã tìm ra
+        Cuối cùng cũng mở được
         <br />
         <span className="text-wine">TẤT CẢ rồi đó! 🌟</span>
       </motion.h2>
@@ -39,7 +39,7 @@ export default function Celebrate({ onReveal }) {
         transition={{ delay: 1.1, duration: 0.6 }}
         className="font-display text-xl font-bold text-ink/60"
       >
-        Sẵn sàng cho điều bất ngờ cuối cùng chưa?
+        Cùng xem món quà cuối cùng nào !
       </motion.p>
 
       <motion.button
