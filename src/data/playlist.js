@@ -33,4 +33,5 @@ export const playlist = [
   { title: 'Track 19', artist: 'Playlist', src: '/audio/track-19.mp3' },
   { title: 'Track 20', artist: 'Playlist', src: '/audio/track-20.mp3' },
   { title: 'Track 21', artist: 'Playlist', src: '/audio/track-21.mp3' },
+  { title: 'Track 22', artist: 'Playlist', src: '/audio/track-22.mp3' },
 ];
