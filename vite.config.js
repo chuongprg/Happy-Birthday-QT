@@ -19,15 +19,23 @@ export default defineConfig({
           background_color: '#FFFDF9',
         },
         workbox: {
-          // Audio tracks are multi-MB — precaching them would block install/activation,
-          // so they're cached on first play instead via runtimeCaching below.
+          maximumFileSizeToCacheInBytes: 30 * 1024 * 1024,
           globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg}'],
+          globIgnores: ['**/images/intro/**'],
           runtimeCaching: [
             {
               urlPattern: /\.mp3$/,
               handler: 'CacheFirst',
               options: {
                 cacheName: 'audio-cache',
+                cacheableResponse: { statuses: [0, 200] },
+              },
+            },
+            {
+              urlPattern: /\.(?:png|jpg|jpeg|svg|webp)$/,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'images-cache',
                 cacheableResponse: { statuses: [0, 200] },
               },
             },
